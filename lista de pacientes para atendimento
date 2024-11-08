@@ -1,0 +1,50 @@
+from datetime import datetime, timedelta
+
+class Paciente:
+    def __init__(self, nome, prioridade, horario):
+        self.nome = nome
+        self.prioridade = prioridade
+        self.horario = datetime.strptime(horario, "%H:%M")  # Converte o horário para um objeto datetime
+        self.prazo_atendimento = self.calcular_prazo_atendimento()
+
+    def calcular_prazo_atendimento(self):
+        # Define o tempo extra de acordo com a prioridade
+        if self.prioridade == "vermelho":
+            tempo_extra = 0
+        elif self.prioridade == "amarelo":
+            tempo_extra = 30
+        elif self.prioridade == "verde":
+            tempo_extra = 60
+        else:  # Azul
+            tempo_extra = 120
+        
+        # Adiciona o tempo extra ao horário inicial
+        prazo_atendimento = self.horario + timedelta(minutes=tempo_extra)
+        return prazo_atendimento
+
+    def __str__(self):
+        return f"Nome: {self.nome}, Prioridade: {self.prioridade}, Prazo para Atendimento: {self.prazo_atendimento.strftime('%H:%M')}"
+
+# Lista para armazenar os pacientes
+lista_pacientes = []
+
+# Função para adicionar paciente na lista ordenada pelo prazo de atendimento
+def adicionar_paciente_na_lista(paciente):
+    lista_pacientes.append(paciente)
+    # Ordena a lista pelo prazo para atendimento
+    lista_pacientes.sort(key=lambda p: p.prazo_atendimento)
+
+while True:
+    # Programa principal
+    nome = input("Digite o nome do paciente: ")
+    prioridade = input("Digite a prioridade do paciente (vermelho, amarelo, verde, azul): ").lower()
+    horario = input("Digite o horário de chegada do paciente (HH:MM): ")
+    
+    # Cria uma instância do paciente e adiciona na lista
+    paciente = Paciente(nome, prioridade, horario)
+    adicionar_paciente_na_lista(paciente)
+    
+    # Exibe a lista de pacientes ordenada pelo prazo de atendimento
+    print("\nLista de pacientes ordenada por prazo para atendimento:")
+    for p in lista_pacientes:
+        print(p)  
